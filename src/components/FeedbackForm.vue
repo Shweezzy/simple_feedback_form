@@ -37,18 +37,42 @@
       </v-container>
     </v-form>
 
-    <b-modal v-model="resolveModal" ok-only><h2>Thank you!</h2></b-modal>
-    <b-modal v-model="rejectModal" ok-only
-      ><h2>Something went wrong!</h2></b-modal
-    >
+    <!-- Vue Modal -->
+    <PopupInfo
+      :status="checkStatus"
+      v-if="showModal"
+      @closePopup="closeResolvePopup"
+    />
+
+    <!-- bootstrap -->
+    <b-modal v-model="resolveBootstrapModal" ok-only>
+      <h2>Thank you!</h2>
+    </b-modal>
+    <b-modal v-model="rejectBootstrapModal" ok-only>
+      <h2>Something went wrong!</h2>
+    </b-modal>
   </div>
 </template>
 
 <script>
+// import axios from "axios";
+
+import PopupInfo from "./popup/PopupInfo.vue";
+
 export default {
+  components: {
+    PopupInfo,
+  },
+  props: {
+    rating: Number,
+  },
   data: () => ({
-    rejectModal: false,
-    resolveModal: false,
+    checkStatus: false,
+    showModal: false,
+
+    rejectBootstrapModal: false,
+    resolveBootstrapModal: false,
+
     valid: false,
     firstName: "",
     comment: "",
@@ -63,6 +87,29 @@ export default {
   }),
   methods: {
     sendData() {
+      // const request = {
+      //   name: this.firstName,
+      //   email: this.email,
+      //   rating: this.rating,
+      //   comment: this.comment,
+      // };
+      // axios
+      //   .post("https://it-academy-viseven.herokuapp.com/task6-check", request)
+      //   .then((response) => {
+      //     console.log("Status:", response.status);
+      //     this.showModal = !this.showModal;
+      //     if (response.status === 200) {
+      //       this.checkStatus = true;
+      //     } else {
+      //       this.checkStatus = false;
+      //     }
+      //     console.log(response.data);
+      //   })
+      //   .catch((error) => {
+      //     this.errorMessage = error.message;
+      //     console.error("There was an error!", error);
+      //   });
+
       const request = {
         method: "POST",
         headers: {
@@ -71,21 +118,32 @@ export default {
         body: JSON.stringify({
           name: this.firstName,
           email: this.email,
-          rating: document.querySelector(".rating").innerText.trim(),
+          rating: this.rating,
           comment: this.comment,
         }),
       };
-
       fetch("https://it-academy-viseven.herokuapp.com/task6-check", request)
         .then((response) => {
           console.log("Status:", response.status);
-          if (response.status === 200) this.resolveModal = !this.resolveModal;
-          else return (this.rejectModal = !this.rejectModal);
+          this.showModal = !this.showModal;
+          if (response.status === 200) {
+            this.checkStatus = true;
+          } else {
+            this.checkStatus = false;
+          }
+          // if (response.status == 200) {
+          //   this.resolveBootstrapModal = !this.resolveBootstrapModal;
+          // } else {
+          //   this.rejectBootstrapModal = !this.rejectBootstrapModal;
+          // }
           return response.json();
         })
         .then((data) => {
           console.log(data);
         });
+    },
+    closeResolvePopup() {
+      this.showModal = !this.showModal;
     },
   },
 };
@@ -98,6 +156,7 @@ form {
   margin: auto;
   margin-top: 3%;
   background: #f0f0f0;
+  border-style: groove;
 }
 #form__title {
   margin-top: 2%;

@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div class="text-center" @click="asd">
     <h2>RATE US</h2>
     <v-rating
       v-model="rating"
@@ -22,6 +22,13 @@ export default {
     rating: 2,
     length: 5,
   }),
+  methods: {
+    asd() {
+      this.$emit("asd", {
+        rating: this.rating,
+      });
+    },
+  },
 };
 </script>
 
