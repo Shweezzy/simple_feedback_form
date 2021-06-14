@@ -48,7 +48,6 @@ export default {
   methods: {
     rate(star) {
       this.stars = this.stars === star ? star - 1 : star;
-      console.log(this.stars);
     },
     numberOfStars() {
       this.$emit("numberOfStars", {
