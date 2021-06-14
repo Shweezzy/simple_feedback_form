@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center" @click="asd">
+  <div class="text-center" @click="numberOfStars">
     <h2>RATE US</h2>
     <v-rating
       v-model="rating"
@@ -23,8 +23,8 @@ export default {
     length: 5,
   }),
   methods: {
-    asd() {
-      this.$emit("asd", {
+    numberOfStars() {
+      this.$emit("numberOfStars", {
         rating: this.rating,
       });
     },
